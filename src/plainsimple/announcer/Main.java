@@ -19,9 +19,16 @@ public class Main {
   //TODO: add missing events
 
   public static void main(String[] args) {
+    String filename = "";
+    if (args.length == 1) {
+      filename = args[0];
+    } else {
+      System.out.println("Error: invalid argument. You must specify the name of the xls file as argument.");
+      System.exit(0);
+    }
     /* opens up the Excel file and puts competitors in their proper events */
     WorkbookReader reader = new WorkbookReader();
-    reader.readWorkbook("sample.xls");
+    reader.readWorkbook(filename);
     /* starts the command line of the program */
     runCommandLine();
   }

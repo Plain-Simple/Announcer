@@ -1,15 +1,16 @@
 package plainsimple.announcer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class Event {
   Event(String event_name){
+    name = event_name;
     /* this is the filename of the mp3 containing the spoken name of the event*/
     audioFile = event_name + ".mp3";
-    shuffleCompetitors();
   }
-
+  public String name = "";
   public String audioFile;
   private ArrayList competitors = new ArrayList(); /* names of all competitors in event */
   /* addCompetitor will be called as competitors are read from spreadsheet */
@@ -19,7 +20,7 @@ public class Event {
   /* needed to call competitors in random order - plan to add a way to disable
      this when settings are implemented */
   public void shuffleCompetitors() {
-    //todo: copy+paste from StackOverflow
+    Collections.shuffle(competitors);
   }
   /* currentCompetitor marks the announcer place in arraylist competitors */
   private int currentCompetitor = 0;

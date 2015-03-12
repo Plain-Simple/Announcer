@@ -6,6 +6,7 @@ public class CLI {
   public Event currentEvent;
   /* declared as an event so that it can return which event to switch to */
   public Event run(Event event) {
+    System.out.println("Current event: " + event.name);
     currentEvent = event;
     String userInput = "";
     String userArgument = "";
@@ -40,20 +41,32 @@ public class CLI {
   }
   /* extracts just the command (up to the space) */
   private String extractCommand(String userInput) {
-    return userInput.substring(0, userInput.indexOf(' '));
+    if (userInput.indexOf(' ') > 0) { /*make sure it actually contains a space*/
+      return userInput.substring(0, userInput.indexOf(' '));
+    } else {
+      return userInput;
+    }
   }
   /* extracts the argument from the user's command (after the space) */
   private String getArgument(String userInput) {
     int substringStart = userInput.indexOf(' ') + 1;
-    int substringEnd = userInput.length();
-    return userInput.substring(substringStart, substringEnd);
+    if (substringStart > 0) {
+      int substringEnd = userInput.length();
+      return userInput.substring(substringStart, substringEnd);
+    } else { /* substring was -1, so no space */
+      return "";
+    }
   }
   private void runCall(String userArgument) {
     if (userArgument.equals("remaining") ||
         userArgument.equals("all")) {
       currentEvent.callRemaining();
     } else {
-      currentEvent.callUp(Integer.parseInt(userArgument));
+      try {
+        currentEvent.callUp(Integer.parseInt(userArgument));
+      } catch (Exception e) {
+        System.out.println("Error: you must enter either an integer or 'remaining");
+      }
     }
   }
   private void runView(String userArgument) {
@@ -75,6 +88,8 @@ public class CLI {
          event is returned.
        */
       //TODO: add more cases
+      case "":
+        return currentEvent;
       case "2x2":
         return Main.cube2;
       case "3x3":
