@@ -12,7 +12,7 @@ public class CLI {
     do {
       userInput = getInput();
       /* userArgument is the part after the space (the argument) */
-      userArgument = getArgument(userArgument);
+      userArgument = getArgument(userInput);
       /* extractCommand gets the part before the space (the command) */
       switch (extractCommand(userInput)) {
         case "call":
@@ -35,9 +35,8 @@ public class CLI {
     } while (true);
   }
   private String getInput() {
-    System.out.println("Announcer$ ");
-    Scanner scanner = new Scanner(System.in);
-    return scanner.nextLine();
+    System.out.print("\nAnnouncer$ ");
+    return new Scanner(System.in).nextLine();
   }
   /* extracts just the command (up to the space) */
   private String extractCommand(String userInput) {
@@ -45,8 +44,9 @@ public class CLI {
   }
   /* extracts the argument from the user's command (after the space) */
   private String getArgument(String userInput) {
-    return userInput.substring(userInput.indexOf(' ') + 1,
-                               userInput.length() - 1);
+    int substringStart = userInput.indexOf(' ') + 1;
+    int substringEnd = userInput.length();
+    return userInput.substring(substringStart, substringEnd);
   }
   private void runCall(String userArgument) {
     if (userArgument.equals("remaining") ||
@@ -61,6 +61,8 @@ public class CLI {
       currentEvent.viewRemaining();
       //todo: there should also be an "all" case for viewing every competitor,
       //todo: and also a view next x (not really needed)
+    } else {
+      runCommandNotFound();
     }
   }
   private void runHelp() {

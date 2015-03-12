@@ -3,10 +3,7 @@ package plainsimple.announcer;
 
 import org.apache.poi.*;
 import org.apache.poi.ss.extractor.ExcelExtractor;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,14 +21,16 @@ public class WorkbookReader {
       Sheet sheet = wb.getSheetAt(0);
       identifyColumns(sheet);
     } catch (Exception e) {
-      System.out.println("exception!!!!");
+      System.out.println("exception while reading workbook");
     }
   }
-
+  /* identify (using title) which column represents which event, and run
+     addCompetitorsToEvent() to add everyone to the events */
   public void identifyColumns(Sheet sheet) {
     int column = 9;
-    System.out.println(sheet.getRow(2).getCell(column).toString());
-    while (!(sheet.getRow(2).getCell(column)).equals(null)) {
+    /* make sure cell isn't null or blank */
+    while (sheet.getRow(2).getCell(column) != null &&
+        sheet.getRow(2).getCell(column).getCellType() != Cell.CELL_TYPE_BLANK) {
       switch (sheet.getRow(2).getCell(column).toString()) {
         case "2x2":
           addCompetitorToEvent(sheet, Main.cube2, column);
@@ -77,10 +76,21 @@ public class WorkbookReader {
   }
   public void addCompetitorToEvent(Sheet sheet, Event event, int eventColumn) {
     int currentRow = 3;
-    while (!(sheet.getRow(currentRow).getCell(1)).equals(null)) {
-      if (sheet.getRow(currentRow).getCell(eventColumn).toString().equals("1")) {
-        event.addCompetitor(sheet.getRow(currentRow).getCell(1).toString());
+    try {
+      /* add competitors that have a "1" in the column eventColumn to the event
+         that eventColumn represents
+       */
+      //TODO: also check other cell, and check for blanks
+      while (sheet.getRow(currentRow).getCell(1) != null) {
+        //TODO: maybe change to numeric value rather than string?
+        if (sheet.getRow(currentRow).getCell(eventColumn).toString().equals("1.0")) {
+          event.addCompetitor(sheet.getRow(currentRow).getCell(1).toString());
+        }
+        currentRow++;
       }
+    } catch (Exception e) {
+      //TODO: why is there an exception???
+      //System.out.println("exception in addCompetitorToEvent()");
     }
   }
 }

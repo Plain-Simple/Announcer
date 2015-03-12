@@ -1,6 +1,7 @@
 package plainsimple.announcer;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Event {
   Event(String event_name){
@@ -8,8 +9,9 @@ public class Event {
     audioFile = event_name + ".mp3";
     shuffleCompetitors();
   }
+
   public String audioFile;
-  private ArrayList competitors; /* names of all competitors in event */
+  private ArrayList competitors = new ArrayList(); /* names of all competitors in event */
   /* addCompetitor will be called as competitors are read from spreadsheet */
   public void addCompetitor(String name){
     competitors.add(name);
@@ -48,10 +50,10 @@ public class Event {
   void viewRemaining() {
     /* prints number of remaining competitors */
     System.out.println((competitors.size() - (currentCompetitor + 1))
-                       + " competitors remaining");
+                       + " competitors remaining:\n");
     /* prints list of remaining competitors */
     for (int i = currentCompetitor; i < competitors.size(); i++) {
-      System.out.println("\n" + competitors.get(i));
+      System.out.println(competitors.get(i));
     }
   }
 }
