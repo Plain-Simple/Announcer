@@ -1,7 +1,8 @@
 package plainsimple.announcer;
 
 public class Announcements {
-  public void playFile(String filename){
+  public void playFile(String filename) {
+    System.out.println("placeholder for playing file " + filename);
     /* this function should play the audio of the specified filename */
   }
   /* the following strings are filenames that are referenced when using this
