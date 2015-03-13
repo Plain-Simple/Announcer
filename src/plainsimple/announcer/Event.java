@@ -35,13 +35,11 @@ public class Event {
   public void callUp(int numberOfCompetitors) {
     if (competitorsRemain()) {
       Announcements say = new Announcements();
-      /* announcementIntro + audioFile will sound something like "The following
-         competitors please bring up your puzzles for the 3x3 event:" */
-      say.playFile(say.announcementIntro);
-      say.playFile(audioFile);
-      for (int i = 0; i < numberOfCompetitors && competitorsRemain(); i++) {
-        say.playFile(competitors.get(currentCompetitor) + ".mp3");
-        currentCompetitor++;
+      try {
+        say.callNames(competitors.subList(currentCompetitor, numberOfCompetitors));
+        currentCompetitor += numberOfCompetitors;
+      } catch (Exception e) {
+        callRemaining();
       }
     }
   }
