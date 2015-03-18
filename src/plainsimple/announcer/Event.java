@@ -2,57 +2,63 @@ package plainsimple.announcer;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Scanner;
 
 public class Event {
-  Event(String event_name){
+  Event(String event_name) {
     name = event_name;
-    /* this is the filename of the mp3 containing the spoken name of the event*/
-    audioFile = event_name + ".mp3";
   }
   public String name = "";
-  public String audioFile;
-  private ArrayList competitors = new ArrayList(); /* names of all competitors in event */
+  private final ArrayList competitors = new
+  ArrayList(); /* names of all competitors in event */
   /* addCompetitor will be called as competitors are read from spreadsheet */
-  public void addCompetitor(String name){
+  public void addCompetitor(String name) {
     competitors.add(name);
   }
-  /* needed to call competitors in random order - plan to add a way to disable
-     this when settings are implemented */
+  /* for calling in random order - called after adding all competitors */
   public void shuffleCompetitors() {
     Collections.shuffle(competitors);
   }
   /* currentCompetitor marks the announcer place in arraylist competitors */
   private int currentCompetitor = 0;
-  public boolean competitorsRemain() {
-    if (currentCompetitor + 1 == competitors.size()) {
+  private int competitorsRemaining() {
+    int remaining = competitors.size() - (currentCompetitor);
+    if (remaining == 0) {
       System.out.println("All competitors called");
-      return false;
-    } else {
-      return true;
     }
+    return remaining;
   }
   public void callUp(int numberOfCompetitors) {
-    if (competitorsRemain()) {
+    if (competitorsRemaining() > 0) {
       Announcements say = new Announcements();
       try {
-        say.callNames(competitors.subList(currentCompetitor, numberOfCompetitors));
+        say.callNames(competitors.subList(currentCompetitor, numberOfCompetitors + currentCompetitor), name);
         currentCompetitor += numberOfCompetitors;
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
+        /* if user specified too many competitors, call everyone remaining */
         callRemaining();
       }
     }
   }
+  public void viewNext(int numberOfCompetitors) {
+    /* don't go above number of competitors or user specified number, whichever
+       is lower */
+    for (int i = currentCompetitor; i < competitors.size() && i < currentCompetitor + numberOfCompetitors; i++) {
+      System.out.println(competitors.get(i));
+    }
+  }
   public void callRemaining() {
-    callUp((competitors.size() - (currentCompetitor + 1)));
+    callUp(competitorsRemaining());
   }
   void viewRemaining() {
-    /* prints number of remaining competitors */
-    System.out.println((competitors.size() - (currentCompetitor + 1))
-                       + " competitors remaining:\n");
-    /* prints list of remaining competitors */
-    for (int i = currentCompetitor; i < competitors.size(); i++) {
-      System.out.println(competitors.get(i));
+    boolean peopleLeft = (competitorsRemaining() != 0);
+    if (peopleLeft) {
+      /* prints number of remaining competitors */
+      System.out.println(competitorsRemaining() + " competitors remaining:\n");
+      /* prints list of remaining competitors */
+      for (int i = currentCompetitor; i < competitors.size(); i++) {
+        System.out.println(competitors.get(i));
+      }
     }
   }
 }

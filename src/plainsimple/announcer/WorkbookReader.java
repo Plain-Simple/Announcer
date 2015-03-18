@@ -1,16 +1,12 @@
 package plainsimple.announcer;
 
-
-import org.apache.poi.*;
-import org.apache.poi.ss.extractor.ExcelExtractor;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
-//TODO: try/catch blocks everywhere!
-public class WorkbookReader {
+class WorkbookReader {
   void readWorkbook(String filename) {
     /* this will need much better error + exception handling later on, probably
        separated into multiple try/catch blocks */
@@ -20,17 +16,19 @@ public class WorkbookReader {
       Workbook wb = WorkbookFactory.create(new File(filename));
       Sheet sheet = wb.getSheetAt(0);
       identifyColumns(sheet);
-    } catch (Exception e) {
+    }
+    catch (Exception e) {
       System.out.println("exception while reading workbook");
     }
   }
   /* identify (using title) which column represents which event, and run
      addCompetitorsToEvent() to add everyone to the events */
-  public void identifyColumns(Sheet sheet) {
+  void identifyColumns(Sheet sheet) {
     int column = 9;
-    /* make sure cell isn't null or blank */
+    /* keep looking while cell isn't null or blank */
     while (sheet.getRow(2).getCell(column) != null &&
-        sheet.getRow(2).getCell(column).getCellType() != Cell.CELL_TYPE_BLANK) {
+           sheet.getRow(2).getCell(column).getCellType() != Cell.CELL_TYPE_BLANK) {
+      /* match up event title with the correct event */
       switch (sheet.getRow(2).getCell(column).toString()) {
         case "2x2":
           addCompetitorToEvent(sheet, Main.cube2, column);
@@ -74,7 +72,7 @@ public class WorkbookReader {
       column++;
     }
   }
-  public void addCompetitorToEvent(Sheet sheet, Event event, int eventColumn) {
+  void addCompetitorToEvent(Sheet sheet, Event event, int eventColumn) {
     int currentRow = 3;
     try {
       /* add competitors that have a "1" in the column eventColumn to the event
@@ -84,13 +82,17 @@ public class WorkbookReader {
       while (sheet.getRow(currentRow).getCell(1) != null) {
         //TODO: maybe change to numeric value rather than string?
         if (sheet.getRow(currentRow).getCell(eventColumn).toString().equals("1.0")) {
+          /* if the competitor is registered for event, add his/her name */
           event.addCompetitor(sheet.getRow(currentRow).getCell(1).toString());
         }
         currentRow++;
       }
-    } catch (Exception e) {
+    }
+    catch (Exception e) {
       //TODO: why is there an exception???
       //System.out.println("exception in addCompetitorToEvent()");
     }
+    //todo: make this optional
+    event.shuffleCompetitors();
   }
 }
