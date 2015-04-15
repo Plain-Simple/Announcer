@@ -2,6 +2,8 @@ package plainsimple.announcer;
 
 import java.io.File;
 import java.util.List;
+import java.util.Scanner;
+
 import jaco.mp3.player.MP3Player;
 
 class Announcements {
@@ -39,10 +41,25 @@ class Announcements {
         throw new java.io.FileNotFoundException();
       }
       player.addToPlayList(audioFile);
+      if (!"silence".equals(fileName)) {
+        System.out.println("   playing " + fileName + ".mp3");
+      }
     }
     catch (Exception e) {
-      System.out.println("Unable to open audio/" + fileName + ".mp3");
+      System.out.println("   Unable to open " + fileName + ".mp3");
     }
   }
-
+  void testSound () {
+    addToList("test");
+    /* make sure there is stuff to play (there may not be if there is an issue
+       opening the file */
+    if (player.getPlayList().size() != 0) {
+      System.out.println("Sound test in progress..." +
+                       "\nPress enter to end test");
+      Scanner scanner = new Scanner(System.in);
+      player.play();
+      scanner.nextLine();
+      player.stop();
+    }
+  }
 }
