@@ -30,7 +30,18 @@ class CLI {
           runEvents();
           break;
         case "event":
+          /* the event is returned back to main and the command line is run off of it */
           return runEvent(userArgument);
+        case "rewind":
+          runRewind(userArgument);
+          break;
+        case "recall":
+          runRecall(userArgument);
+          break;
+        case "test":
+          Announcements say = new Announcements();
+          say.testSound();
+          break;
         case "exit":
           System.exit(0);
         default:
@@ -40,7 +51,10 @@ class CLI {
     while (true);
   }
   private String getInput() {
-    System.out.print("\nAnnouncer$ ");
+    System.out.print("\nCalled: " + currentEvent.currentCompetitor +
+        "\nRemaining: " + currentEvent.competitorsRemaining() +
+        "\nTotal: " + (currentEvent.currentCompetitor + currentEvent.competitorsRemaining()) +
+        "\n\nAnnouncer$ ");
     return new Scanner(System.in).nextLine();
   }
   /* extracts just the command (up to the space) */
@@ -72,7 +86,7 @@ class CLI {
         currentEvent.callUp(Integer.parseInt(userArgument));
       }
       catch (Exception e) {
-        System.out.println("Error: you must enter either an integer or 'remaining'");
+        System.out.println("Error: you must enter either a number or 'remaining'");
       }
     }
   }
@@ -95,9 +109,14 @@ class CLI {
     System.out.println(
       "This program should be started by passing the desired spreadsheet to read from as an argument like this: java Announcer Spreadsheet.xls \n"
       +
-      "Possible commands are: \n" +
+      "Possible commands are: (n stands for any number)\n" +
+      "    test             tests the sound \n" +
       "    call n           calls the next n competitors in the current event \n" +
       "    call remaining   calls remaining competitors in the current event \n" +
+      "    recall           calls the competitors last called again \n" +
+      "    recall n         calls the n last competitors called again \n" +
+      "    rewind           rewinds the called competitors number to what it was before the last round of calls \n" +
+      "    rewind n         rewinds the called competitors number n back \n" +
       "    view n           shows the next n competitors in the current event \n" +
       "    view remaining   shows remaining competitors in the current event \n" +
       "    events           shows list of possible events \n" +
@@ -190,5 +209,30 @@ class CLI {
   private void runCommandNotFound() {
     System.out.println("Command not found. Type 'help' or '?' for help and a" +
                        " list of possible commands");
+  }
+  private void runRewind(String userArgument) {
+    if (userArgument.equals("")) {
+      currentEvent.rewindLast();
+    } else {
+      try {
+        currentEvent.rewindNumber(Integer.parseInt(userArgument));
+      } catch (Exception e) {
+        System.out.println("Error: you must either enter a number or nothing");
+      }
+    }
+  }
+  private void runRecall(String userArgument) {
+    if (userArgument.equals("")) {
+      currentEvent.recallLast();
+    } else {
+      try {
+        currentEvent.recallNumber(Integer.parseInt(userArgument));
+      } catch (Exception e) {
+        System.out.println("Error: you must either enter a number or nothing");
+      }
+    }
+  }
+  private void testSound() {
+
   }
 }

@@ -18,9 +18,11 @@ public class Event {
   public void shuffleCompetitors() {
     Collections.shuffle(competitors);
   }
+  /* the number of competitor called in the last call */
+  private int lastNumberCalled;
   /* currentCompetitor marks the announcer place in arraylist competitors */
-  private int currentCompetitor = 0;
-  private int competitorsRemaining() {
+  int currentCompetitor = 0;
+  int competitorsRemaining() {
     int remaining = competitors.size() - (currentCompetitor);
     if (remaining == 0) {
       System.out.println("All competitors called");
@@ -33,6 +35,7 @@ public class Event {
       try {
         say.callNames(competitors.subList(currentCompetitor, numberOfCompetitors + currentCompetitor), name);
         currentCompetitor += numberOfCompetitors;
+        lastNumberCalled = numberOfCompetitors;
       }
       catch (Exception e) {
         /* if user specified too many competitors, call everyone remaining */
@@ -59,6 +62,35 @@ public class Event {
       for (int i = currentCompetitor; i < competitors.size(); i++) {
         System.out.println(competitors.get(i));
       }
+    }
+  }
+  public void recallLast() {
+    currentCompetitor -= lastNumberCalled;
+    System.out.println("Re-calling last " + lastNumberCalled + " people...");
+    callUp(lastNumberCalled);
+    lastNumberCalled = 0;
+  }
+  public void recallNumber(int howFarBack) {
+    /* make sure recall doesn't go forward or farther back than zero */
+    if (currentCompetitor - howFarBack < 0 || howFarBack < 0) {
+      System.out.println("Please enter a positive number less than " + currentCompetitor);
+    } else {
+      currentCompetitor -= howFarBack;
+      callUp(howFarBack);
+      lastNumberCalled = 0;
+    }
+  }
+  public void rewindLast() {
+    currentCompetitor -= lastNumberCalled;
+    lastNumberCalled = 0;
+  }
+  public void rewindNumber(int howFarBack) {
+    /* make sure rewind doesn't go forward or farther back than zero */
+    if (currentCompetitor - howFarBack < 0 || howFarBack < 0) {
+      System.out.println("Please enter a positive number less than " + currentCompetitor);
+    } else {
+      currentCompetitor -= howFarBack;
+      lastNumberCalled = 0;
     }
   }
 }
