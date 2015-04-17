@@ -2,13 +2,14 @@ package plainsimple.announcer;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Event {
   Event(String event_name) {
     name = event_name;
   }
   public String name = "";
-  private final ArrayList competitors = new
+  private final List competitors = new
   ArrayList(); /* names of all competitors in event */
   /* addCompetitor will be called as competitors are read from spreadsheet */
   public void addCompetitor(String name) {

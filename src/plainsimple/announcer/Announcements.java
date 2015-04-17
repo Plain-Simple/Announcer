@@ -46,7 +46,7 @@ class Announcements {
       }
     }
     catch (Exception e) {
-      System.out.println("   Unable to open " + fileName + ".mp3");
+      System.out.println("   unable to open " + fileName + ".mp3");
     }
   }
   void testSound () {

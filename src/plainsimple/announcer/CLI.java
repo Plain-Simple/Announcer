@@ -42,7 +42,8 @@ class CLI {
           Announcements say = new Announcements();
           say.testSound();
           break;
-        case "exit":
+        case "exit": /* no break is intentional */
+        case "quit":
           System.exit(0);
         default:
           runCommandNotFound();
@@ -86,7 +87,8 @@ class CLI {
         currentEvent.callUp(Integer.parseInt(userArgument));
       }
       catch (Exception e) {
-        System.out.println("Error: you must enter either a number or 'remaining'");
+        Announcements say = new Announcements();
+        say.playFile(userArgument);
       }
     }
   }
@@ -113,6 +115,7 @@ class CLI {
       "    test             tests the sound \n" +
       "    call n           calls the next n competitors in the current event \n" +
       "    call remaining   calls remaining competitors in the current event \n" +
+      "    call whatever    plays whatever.mp3 from the audio folder \n" +
       "    recall           calls the competitors last called again \n" +
       "    recall n         calls the n last competitors called again \n" +
       "    rewind           rewinds the called competitors number to what it was before the last round of calls \n" +
@@ -121,8 +124,8 @@ class CLI {
       "    view remaining   shows remaining competitors in the current event \n" +
       "    events           shows list of possible events \n" +
       "    event newevent   switches to newevent \n" +
-      "    help             show this help guide"
-    );
+      "    help             show this help guide \n" +
+      "    exit or quit     exit the program");
   }
   private void runEvents() {
     System.out.println(

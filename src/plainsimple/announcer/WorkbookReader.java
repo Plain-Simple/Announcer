@@ -18,8 +18,19 @@ class WorkbookReader {
       identifyColumns(sheet);
     }
     catch (Exception e) {
-      System.out.println("Error: xls file not found. Please check your spelling and make sure you are running the terminal in the right directory.");
-      System.exit(0);
+      try {
+        /* try again by adding xls to the end - maybe they forgot the extension */
+        filename += ".xls";
+      /* opens the workbook stored in the file, and takes the first
+         sheet. That is the only sheet we will be using */
+        Workbook wb = WorkbookFactory.create(new File(filename));
+        Sheet sheet = wb.getSheetAt(0);
+        identifyColumns(sheet);
+      }
+      catch (Exception f) {
+        System.out.println("Error: xls file not found. Please check your spelling and make sure you are running the terminal in the right directory.");
+        System.exit(0);
+      }
     }
   }
   /* identify (using title) which column represents which event, and run

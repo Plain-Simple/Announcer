@@ -19,13 +19,14 @@ class Main {
   //TODO: add missing events
 
   public static void main(String[] args) {
+    System.out.println("Announcer version 1.1\n");
     String filename = "";
     if (args.length == 1) {
       /* take in argument as excel workbook filename */
       filename = args[0];
     }
     else {
-      System.out.println("Error: invalid argument. You must specify the name of the xls file, including the file extension, as the argument. Use quotes if the file name has a space.");
+      System.out.println("Error: invalid argument. You must specify the name of the xls file as the argument. Use quotes if the file name has a space.");
       System.exit(0);
     }
     /* opens up the Excel file and puts competitors in their proper events */
