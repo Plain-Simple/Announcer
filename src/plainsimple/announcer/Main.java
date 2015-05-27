@@ -4,6 +4,9 @@ class Main {
   /* for simplicity, all official events will be created, even though unused
      ones will have zero competitors. Note that they are static to avoid a huge
      amount of memory being used to copy them */
+  /* the all event is never used by users - it is used by the program to ensure
+     that all needed files are present */
+  static final Event all = new Event("all");
   static final Event cube2 = new Event("2x2");
   static final Event cube3 = new Event("3x3");
   static final Event cube4 = new Event("4x4");

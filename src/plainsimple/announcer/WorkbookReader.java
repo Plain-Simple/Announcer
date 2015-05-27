@@ -6,7 +6,17 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import java.io.File;
+import java.util.*;
+
 class WorkbookReader {
+  Set missingAudio = new HashSet<String>();
+  void printMissingAudio() { /* this function SUCKS!! Find a better way */
+    List missingAudioList = new ArrayList<>(missingAudio);
+    Collections.sort(missingAudioList);
+    for (int i = 0; i < missingAudioList.size(); i++) {
+      System.out.println("Audio not found for " + missingAudioList.get(i));
+    }
+  }
   void readWorkbook(String filename) {
     /* this will need much better error + exception handling later on, probably
        separated into multiple try/catch blocks */
@@ -16,6 +26,8 @@ class WorkbookReader {
       Workbook wb = WorkbookFactory.create(new File(filename));
       Sheet sheet = wb.getSheetAt(0);
       identifyColumns(sheet);
+      /* populate the all event, so important stuff can be checked against every single name */
+      populateAllEvent(sheet);
     }
     catch (Exception e) {
       try {
@@ -83,6 +95,7 @@ class WorkbookReader {
       }
       column++;
     }
+    printMissingAudio();
   }
   void addCompetitorToEvent(Sheet sheet, Event event, int eventColumn) {
     int currentRow = 3;
@@ -95,7 +108,11 @@ class WorkbookReader {
         //TODO: maybe change to numeric value rather than string?
         if (sheet.getRow(currentRow).getCell(eventColumn).toString().equals("1.0")) {
           /* if the competitor is registered for event, add his/her name */
-          event.addCompetitor(sheet.getRow(currentRow).getCell(1).toString());
+          String  name = sheet.getRow(currentRow).getCell(1).toString();
+          event.addCompetitor(name);
+          if (!new File("audio/names/" + name + ".mp3").exists()) {
+            missingAudio.add(name);
+          }
         }
         currentRow++;
       }
@@ -105,6 +122,22 @@ class WorkbookReader {
       //System.out.println("exception in addCompetitorToEvent()");
     }
     //todo: make this optional
-    event.shuffleCompetitors();
+    //event.shuffleCompetitors();
+  }
+  void populateAllEvent(Sheet sheet) {
+    int currentRow = 3;
+    try {
+      //TODO: also check other cell, and check for blanks
+      while (sheet.getRow(currentRow).getCell(1) != null) {
+        //TODO: maybe change to numeric value rather than string?
+          /* if the competitor is registered for event, add his/her name */
+          Main.all.addCompetitor(sheet.getRow(currentRow).getCell(1).toString());
+        currentRow++;
+      }
+    }
+    catch (Exception e) {
+      //TODO: why is there an exception???
+      //System.out.println("exception in addCompetitorToEvent()");
+    }
   }
 }

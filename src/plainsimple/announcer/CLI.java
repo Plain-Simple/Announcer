@@ -1,9 +1,12 @@
 package plainsimple.announcer;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Scanner;
 
 class CLI {
   private Event currentEvent;
+
   /* declared as an event so that it can return which event to switch to */
   public Event run(Event event) {
     System.out.println("Current event: " + event.name);
@@ -24,10 +27,10 @@ class CLI {
           break;
         case "?": /* no break intentionally since both mean same thing */
         case "help":
-          runHelp();
+          printFile("help");
           break;
         case "events":
-          runEvents();
+          printFile("events");
           break;
         case "event":
           /* the event is returned back to main and the command line is run off of it */
@@ -41,6 +44,12 @@ class CLI {
         case "test":
           Announcements say = new Announcements();
           say.testSound();
+          break;
+        case "alphabetize":
+          runAlphabetize();
+          break;
+        case "randomize":
+          runRandomize();
           break;
         case "exit": /* no break is intentional */
         case "quit":
@@ -58,100 +67,90 @@ class CLI {
         "\n\nAnnouncer$ ");
     return new Scanner(System.in).nextLine();
   }
+
   /* extracts just the command (up to the space) */
   private String extractCommand(String userInput) {
     if (userInput.indexOf(' ') > 0) { /*make sure it actually contains a space*/
       return userInput.substring(0, userInput.indexOf(' ')).toLowerCase();
-    }
-    else {
+    } else {
       return userInput.toLowerCase();
     }
   }
+
   /* extracts the argument from the user's command (after the space) */
   private String getArgument(String userInput) {
     int substringStart = userInput.indexOf(' ') + 1;
     if (substringStart > 0) {
       int substringEnd = userInput.length();
       return userInput.substring(substringStart, substringEnd).toLowerCase();
-    }
-    else {   /* substring was -1, so no space */
+    } else {   /* substring was -1, so no space */
       return "";
     }
   }
+
   private void runCall(String userArgument) {
     if (userArgument.equals("remaining")) {
       currentEvent.callRemaining();
-    }
-    else {
+    } else {
       try {
         currentEvent.callUp(Integer.parseInt(userArgument));
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         Announcements say = new Announcements();
         say.playFile(userArgument);
       }
     }
+  }
+  private void runRandomize() {
+    if (currentEvent.currentCompetitor == 0) {
+      currentEvent.shuffleCompetitors();
+      System.out.println("Event randomized. This cannot be undone once names are called");
+    } else {
+      System.out.println("Unable to randomize because names have already been called");
+    }
+
+  }
+  private void runAlphabetize() {
+    if (currentEvent.currentCompetitor == 0) {
+      currentEvent.unshuffleCompetitors();
+      System.out.println("Event alphabetized. This cannot be undone once names are called");
+    } else {
+      System.out.println("Unable to alphabetize because names have already been called");
+    }
+
   }
   private void runView(String userArgument) {
     if (userArgument.equals("remaining")) {
       currentEvent.viewRemaining();
       //todo: there should also be an "all" case for viewing every competitor,
       //todo: and also a view next x
-    }
-    else {
+    } else {
       try {
         currentEvent.viewNext(Integer.parseInt(userArgument));
-      }
-      catch (Exception e) {
+      } catch (Exception e) {
         System.out.println("Error: you must enter either an integer or 'remaining'");
       }
     }
   }
-  private void runHelp() {
-    System.out.println(
-      "This program should be started by passing the desired spreadsheet to read from as an argument like this: java Announcer Spreadsheet.xls \n"
-      +
-      "Possible commands are: (n stands for any number)\n" +
-      "    test             tests the sound \n" +
-      "    call n           calls the next n competitors in the current event \n" +
-      "    call remaining   calls remaining competitors in the current event \n" +
-      "    call whatever    plays whatever.mp3 from the audio folder \n" +
-      "    recall           calls the competitors last called again \n" +
-      "    recall n         calls the n last competitors called again \n" +
-      "    rewind           rewinds the called competitors number to what it was before the last round of calls \n" +
-      "    rewind n         rewinds the called competitors number n back \n" +
-      "    view n           shows the next n competitors in the current event \n" +
-      "    view remaining   shows remaining competitors in the current event \n" +
-      "    events           shows list of possible events \n" +
-      "    event newevent   switches to newevent \n" +
-      "    help             show this help guide \n" +
-      "    exit or quit     exit the program");
+
+  private void runFront(String userArgument) {
+
   }
-  private void runEvents() {
-    System.out.println(
-      "Supported events: \n" +
-      "note: the most common abbreviations for events are also supported, like '3' for 3x3 \n"
-      +
-      "    2x2 \n" +
-      "    3x3 \n" +
-      "    4x4 \n" +
-      "    5x5 \n" +
-      "    6x6 \n" +
-      "    7x7 \n" +
-      "    OH \n" +
-      "    Pyra \n" +
-      "    Skewb \n" +
-      "    3BLD \n" +
-      "    4BLD \n" +
-      "    5BLD"
-    );
+  private void printFile(String filename) {
+    try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+      String line = null;
+      while ((line = br.readLine()) != null) {
+        System.out.println(line);
+      }
+    } catch (Exception e) {
+      System.out.println ("File " + filename + " not found");
+    }
   }
+
   private Event runEvent(String userArgument) {
     switch (userArgument) {
       /* returns the event corresponding to what the user wanted. If no event
          corresponds to what the user said, they get an error and the current
-         event is returned.
-       */
+         event is returned. */
       case "":
         return currentEvent;
       case "2x2":
@@ -204,15 +203,17 @@ class CLI {
         return Main.skewb;
       default:
         System.out.println("Error: no such event. Type 'help' or '?' for help" +
-                           " and a list of possible commands. Type 'events'" +
-                           " for a list of all events.");
+            " and a list of possible commands. Type 'events'" +
+            " for a list of all events.");
         return currentEvent;
     }
   }
+
   private void runCommandNotFound() {
     System.out.println("Command not found. Type 'help' or '?' for help and a" +
-                       " list of possible commands");
+        " list of possible commands");
   }
+
   private void runRewind(String userArgument) {
     if (userArgument.equals("")) {
       currentEvent.rewindLast();
@@ -224,6 +225,7 @@ class CLI {
       }
     }
   }
+
   private void runRecall(String userArgument) {
     if (userArgument.equals("")) {
       currentEvent.recallLast();
@@ -234,8 +236,5 @@ class CLI {
         System.out.println("Error: you must either enter a number or nothing");
       }
     }
-  }
-  private void testSound() {
-
   }
 }

@@ -57,6 +57,7 @@ class Announcements {
       System.out.println("Sound test in progress..." +
                        "\nPress enter to end test");
       Scanner scanner = new Scanner(System.in);
+      player.setRepeat(true);
       player.play();
       scanner.nextLine();
       player.stop();

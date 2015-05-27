@@ -19,6 +19,9 @@ public class Event {
   public void shuffleCompetitors() {
     Collections.shuffle(competitors);
   }
+  public void unshuffleCompetitors() {
+    Collections.sort(competitors);
+  }
   /* the number of competitor called in the last call */
   private int lastNumberCalled;
   /* currentCompetitor marks the announcer place in arraylist competitors */
@@ -74,7 +77,7 @@ public class Event {
   public void recallNumber(int howFarBack) {
     /* make sure recall doesn't go forward or farther back than zero */
     if (currentCompetitor - howFarBack < 0 || howFarBack < 0) {
-      System.out.println("Please enter a positive number less than " + currentCompetitor);
+      System.out.println("Please enter a positive number less than or equal to " + currentCompetitor);
     } else {
       currentCompetitor -= howFarBack;
       callUp(howFarBack);
@@ -88,10 +91,19 @@ public class Event {
   public void rewindNumber(int howFarBack) {
     /* make sure rewind doesn't go forward or farther back than zero */
     if (currentCompetitor - howFarBack < 0 || howFarBack < 0) {
-      System.out.println("Please enter a positive number less than " + currentCompetitor);
+      System.out.println("Please enter a positive number less than or equal to " + currentCompetitor);
     } else {
       currentCompetitor -= howFarBack;
       lastNumberCalled = 0;
+    }
+  }
+  public void front(String name) {
+    int targetIndex = competitors.indexOf(name);
+    if (targetIndex >= 0) {
+      competitors.remove(targetIndex);
+      competitors.add(currentCompetitor, name);
+    } else {
+      System.out.println(name + " not found");
     }
   }
 }
