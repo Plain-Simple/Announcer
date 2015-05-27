@@ -1,0 +1,19 @@
+Possible commands are: 
+
+(n stands for any number, a * after it means specifying a number is optional)
+
+    test             tests the sound
+    call n           calls the next n competitors in the current event
+    call remaining   calls remaining competitors in the current event
+    call whatever    plays whatever.mp3 from the audio folder (whatever.mp3 must be in all lowercase - this bug is being fixed)
+    recall           calls the competitors last called again
+    recall n*        re-calls the last n competitors if n is specified, otherwise recalls competitors called in the last round of calls
+    rewind n*        rewinds n competitors back if n is specified, otherwise rewinds to before the last round of calls
+    view n           shows the next n competitors in the current event
+    view remaining   shows remaining competitors in the current event
+    randomize        randomizes the order of competitors within the current event
+    alphabetize      alphabetizes the order of competitors within the current event
+    events           shows list of possible events
+    event newevent   switches to newevent
+    help             show this help guide
+    exit or quit     exit the program");
