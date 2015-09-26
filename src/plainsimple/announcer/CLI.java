@@ -27,10 +27,14 @@ class CLI {
           break;
         case "?": /* no break intentionally since both mean same thing */
         case "help":
-          printFile("help");
+          if(!printFile("help")) {
+            System.out.println("Error: could not access help file.\n");
+          }
           break;
         case "events":
-          printFile("events");
+          if(!printFile("events")) {
+            System.out.println("Error: Could not access events file.\n");
+          }
           break;
         case "event":
           /* the event is returned back to main and the command line is run off of it */
@@ -123,6 +127,8 @@ class CLI {
       currentEvent.viewRemaining();
       //todo: there should also be an "all" case for viewing every competitor,
       //todo: and also a view next x
+    //} else if(userArgument.equals("all")) {
+
     } else {
       try {
         currentEvent.viewNext(Integer.parseInt(userArgument));
@@ -145,7 +151,6 @@ class CLI {
       }
       return true;
     } catch (Exception e) {
-      System.out.println ("File " + filename + " not found");
       return false;
     }
   }

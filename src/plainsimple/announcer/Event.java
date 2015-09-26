@@ -58,8 +58,7 @@ public class Event {
     callUp(competitorsRemaining());
   }
   void viewRemaining() {
-    boolean peopleLeft = (competitorsRemaining() != 0);
-    if (peopleLeft) {
+    if (competitorsRemaining() != 0) {
       /* prints number of remaining competitors */
       System.out.println(competitorsRemaining() + " competitors remaining:\n");
       /* prints list of remaining competitors */
