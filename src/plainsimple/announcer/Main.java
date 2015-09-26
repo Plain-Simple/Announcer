@@ -22,14 +22,20 @@ class Main {
   //TODO: add missing events
 
   public static void main(String[] args) {
-    System.out.println("Announcer version 1.1\n");
+    System.out.println("Announcer version 1.1");
+    System.out.println("Copyright (C) Plain Simple Apps 2015.");
+    System.out.println("Visit github.com/plain-simple/announcer for more information\n");
     String filename = "";
     if (args.length == 1) {
       /* take in argument as excel workbook filename */
       filename = args[0];
-    }
-    else {
-      System.out.println("Error: invalid argument. You must specify the name of the xls file as the argument. Use quotes if the file name has a space.");
+    } else if(args.length == 0) {
+      System.out.println("Error: no file specified. You must specify the name " +
+        "of the xls file as the argument.\nUse quotes if the file name has a space." +
+        " It should be in the directory this program is \ncalled from and have the \".xls\" extension.");
+      System.exit(0);
+    } else {
+      System.out.println("Error: too many arguments. Only one xls file can be specified.");
       System.exit(0);
     }
     /* opens up the Excel file and puts competitors in their proper events */

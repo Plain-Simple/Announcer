@@ -135,14 +135,18 @@ class CLI {
   private void runFront(String userArgument) {
 
   }
-  private void printFile(String filename) {
+  // reads specified file and prints contents to console
+  // returns whether file was read successfully
+  public static boolean printFile(String filename) {
     try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
       String line = null;
       while ((line = br.readLine()) != null) {
         System.out.println(line);
       }
+      return true;
     } catch (Exception e) {
       System.out.println ("File " + filename + " not found");
+      return false;
     }
   }
 
